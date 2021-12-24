@@ -17,7 +17,7 @@ function CreatureList(){
         if(window.confirm("This creature will be lost forever and cannot be recovered. Are you sure?")){
             fetch("http://localhost:8080/creatures/"+creatureId, {
                 method:"DELETE"
-    
+
                 })
                 .then(async data => {
                     if(data.ok){
@@ -53,8 +53,8 @@ function CreatureList(){
                         <th className="border-grey-400 border-2">Type</th>
                         <th className="border-grey-400 border-2">Description</th>
                         <th className="border-grey-400 border-2">Attacks</th>
+                        <th className="border-grey-400 border-2">Items</th>
                         <th className="border-grey-400 border-2">Stats</th>
-                        <th className="bg-gray-50"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,17 +71,22 @@ function CreatureList(){
                                     )
                                 }</td>
                                 <td className="border-grey-400 border-b-2 border-r-2 border-l-2 pl-2 pr-2">{
+                                    creature.items.map(
+                                        item => (<p key={item.id}>{item.name}</p>)
+                                    )
+                                }</td>
+                                <td className="border-grey-400 border-b-2 border-r-2 border-l-2 pl-2 pr-2">{
                                     <div>
                                         <p>
-                                            <FontAwesomeIcon icon={faHeart} className="text-green-700"/> 
+                                            <FontAwesomeIcon icon={faHeart} className="text-green-700"/>
                                             {creature.stats.health}
                                         </p>
                                         <p>
-                                            <FontAwesomeIcon icon={faMeteor} className="text-red-700"/> 
+                                            <FontAwesomeIcon icon={faMeteor} className="text-red-700"/>
                                             {creature.stats.attack}
                                         </p>
                                         <p>
-                                            <FontAwesomeIcon icon={faShieldAlt} className="text-yellow-500"/> 
+                                            <FontAwesomeIcon icon={faShieldAlt} className="text-yellow-500"/>
                                             {creature.stats.defense}
                                         </p>
                                     </div>

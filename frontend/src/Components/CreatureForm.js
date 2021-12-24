@@ -6,9 +6,12 @@ function CreatureForm(){
     const [ type , setType ] = useState(null)
     const [ description , setDescription ] = useState(null)
     const [ attacks , setAttacks ] = useState([])
+    const [ items , setItems ] = useState([])
     const [ stats ] = useState({health:null, attack:null, defense:null})
     const [ attackList, setAttackList ] = useState([])
     const [ attacksInput, setAttacksInput ] = useState([])
+    const [ itemList, setItemList ] = useState([])
+    const [ itemInput, setItemInput ] = useState([])
 
     const [ msg, setMsg ] = useState(" ")
 
@@ -18,6 +21,13 @@ function CreatureForm(){
             .then(
                 (result) => {
                     setAttackList(result);
+                }).catch(() => setMsg("Connection error, try again later."));
+
+        fetch("http://localhost:8080/items")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setItemList(result);
                 }).catch(() => setMsg("Connection error, try again later."))
   }, []);
 
@@ -27,9 +37,10 @@ function CreatureForm(){
             method: "POST",
             body: JSON.stringify({
                     name:name,
-                    type:type, 
-                    description:description, 
-                    attacks:attacks, 
+                    type:type,
+                    description:description,
+                    attacks:attacks,
+                    items:items,
                     stats:stats
                 }),
             headers: {"Content-type": "application/json; charset=UTF-8"}
@@ -56,7 +67,7 @@ function CreatureForm(){
     }
 
     const addAttackInput = () => {
-        setAttacksInput([...attacksInput, 
+        setAttacksInput([...attacksInput,
             <select className="mb-10 w-full" onChange={addAttack}>
                 <option value="Select an attack">- Select an attack -</option>
                 {attackList.map((attack) => <option key={attack.id} value={attack.id}>{attack.name}</option>)}
@@ -67,6 +78,27 @@ function CreatureForm(){
     const removeAttackInput = () => {
         setAttacksInput(attacksInput.slice(0, -1))
         setAttacks(attacks.slice(0, -1))
+    }
+
+    const addItem = (e) => {
+        if(e.target.value != null){
+            let itemToAdd = itemList.find(item => item.id.toString() === e.target.value)
+            setItems([...items, itemToAdd]);
+        }
+    }
+
+    const addItemInput = () => {
+        setItemInput([...itemInput,
+            <select className="mb-10 w-full" onChange={addItem}>
+                <option value="Select an item">- Select an item -</option>
+                {itemList.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+        ])
+    }
+
+    const removeItemInput = () => {
+        setItemInput(itemInput.slice(0, -1))
+        setItems(items.slice(0, -1))
     }
 
     const fieldsNotNull = () => {
@@ -80,7 +112,7 @@ function CreatureForm(){
                 <input type="text" placeholder="Name" onChange={e => setName(e.target.value)}/>
                 <input type="text" placeholder="Type" onChange={e => setType(e.target.value)}/>
                 <textarea className="w-full h-32 align-text-top"type="text" placeholder="Description" onChange={e => setDescription(e.target.value)}/>
-                
+
                 <div className="space-x-10 flex justify-between">
                     <input className="w-1/3" type="number" placeholder="HP" onChange={e => stats.health = e.target.value}/>
                     <input className="w-1/3" type="number" placeholder="ATT" onChange={e => stats.attack = e.target.value}/>
@@ -94,12 +126,20 @@ function CreatureForm(){
                     <div onClick={() => removeAttackInput()} className="cursor-pointer text-3xl text-red-700">-</div>
                     <div onClick={() => addAttackInput()} className="cursor-pointer text-3xl text-green-700">+</div>
                 </div>
+
+                <p className="text-lg text-gray-500">Items:</p>
+                <div className="flex flex-col items-center w-full">
+                    {/* Return the item inputs*/}
+                    {itemInput}
+                    <div onClick={() => removeItemInput()} className="cursor-pointer text-3xl text-red-700">-</div>
+                    <div onClick={() => addItemInput()} className="cursor-pointer text-3xl text-green-700">+</div>
+                </div>
             </form>
             <button type="button" className="w-full text-xl text-gray-500 pt-10" onClick={() => onSubmit()}>Submit</button>
             <p className="w-full text-center text-red-700">{msg}</p>
         </div>
     )
-    
+
 }
 
 export default CreatureForm

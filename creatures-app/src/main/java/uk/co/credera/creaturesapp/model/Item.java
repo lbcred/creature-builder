@@ -36,6 +36,13 @@ public class Item {
     public Item() {
     }
 
+    public Item(Integer id, String name, String itemType, String description, List<Creature> creatures) {
+        this.id = id;
+        this.name = name;
+        this.itemType = itemType;
+        this.description = description;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -58,14 +65,6 @@ public class Item {
 
     public void setItemType(String itemType) {
         this.itemType = itemType;
-    }
-
-    public List<Creature> getCreatures() {
-        return creatures;
-    }
-
-    public void setCreatures(List<Creature> creatures) {
-        this.creatures = creatures;
     }
 
     public String getDescription() {
